@@ -73,13 +73,25 @@ z2=Theta1*a1;
 a2=[ones(1,size(z2,2)) ;sigmoid(z2)];
 
 h3=sigmoid(Theta2*a2);
+r=0;
+r=sum(sum(Theta1.^2))+sum(sum(Theta2.^2))-sum(Theta1(:,1).^2)-sum(Theta2(:,1).^2);
 
-r=sum(sum(Theta1.^2))+sum(sum(Theta2.^2))-sum(Theta1(:,1))-sum(Theta2(:,1));
+J=(1/m)*sum(sum(-Z'.*log(h3)-(1-Z)'.*log(1-h3)))+(lambda*r)/(2*m);
+delta3=h3-Z';
+delta2=(Theta2'*delta3).*(a2.*(1-a2));
 
-J=(1/m)*sum(sum(-Z'.*log(h3)-(1-Z)'.*log(h3)));
+delta2=delta2(2:end,:);
+D1=zeros(size(delta2,1),size(a1,1));
+D2=zeros(size(delta3,1),size(a2,1));
 
-
-
+D1=D1+delta2*a1';
+D2=D2+delta3*a2';
+theta1=Theta1;
+theta2=Theta2;
+theta1(:,1)=zeros(1,length(Theta1(:,1)));
+theta2(:,1)=zeros(1,length(Theta2(:,1)));
+Theta1_grad=D1/m+(lambda/m)*theta1;
+Theta2_grad=D2/m+(lambda/m)*theta2;
 
 
 
